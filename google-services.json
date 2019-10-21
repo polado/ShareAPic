@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "788414112646",
+    "firebase_url": "https://sendapic-82cc3.firebaseio.com",
+    "project_id": "sendapic-82cc3",
+    "storage_bucket": "sendapic-82cc3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788414112646:android:be81ecde029c90d5550207",
+        "android_client_info": {
+          "package_name": "com.ado.example.share_a_pic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788414112646-i8f8sf1eul9e7d6oq3q9c2858rh1g72n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1tPsCqydlud7Kvlu-DqaCAZED6ivNjRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788414112646-i8f8sf1eul9e7d6oq3q9c2858rh1g72n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
