@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share_a_pic/blocs/images_bloc.dart';
 import 'package:share_a_pic/models/image_model.dart';
 import 'package:share_a_pic/models/user_model.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ImageWidget extends StatefulWidget {
   final ImageModel image;
@@ -19,53 +19,71 @@ class ImageWidget extends StatefulWidget {
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
-  bool isAddComment = false, isLove = false;
-  String _heartActive = 'love', _heartInActive = 'unlove';
-  String _likeActive = 'like', _likeInActive = 'dislike';
+  bool isAddComment = false;
+  String _likeActive = 'show',
+      _likeInActive = 'hide';
   String _commentsActive = 'show', _commentsInActive = 'hide';
   String _infoActive = 'show', _infoInActive = 'hide';
-  bool isHeart = false, isLike = false, isSend = false, isInfo = false;
+  bool isLike = false,
+      isSend = false,
+      isInfo = false;
+  String likeType = 'like';
+  TextEditingController _textEditingController = new TextEditingController();
 
-  PanelController _panelController = new PanelController();
+  bool emoji = false;
 
   GlobalKey _dataKey = new GlobalKey();
 
-  setHeart() async {
-    if (isHeart) {
+  String emojiString = 'assets/like.flr';
+
+  emojiLike() async {
+    print('islike $isLike');
+    setState(() {
+      isLike = true;
+    });
+    await imagesBloc.setLike(widget.image.id, widget.user, likeType);
+  }
+
+  addComment() async {
+    if (_textEditingController.text != null &&
+        _textEditingController.text
+            .trim()
+            .isNotEmpty &&
+        _textEditingController.text.trim() != ' ') {
+      print('comment if');
+      imagesBloc.setComment(
+          widget.image.id, widget.user, _textEditingController.text.trim());
       setState(() {
-        isHeart = false;
+        isSend = true;
+        _textEditingController.clear();
       });
-      await imagesBloc.deleteLove(widget.image.id, widget.user);
     } else {
+      print('comment else');
       setState(() {
-        isHeart = true;
+        isSend = false;
       });
-      await imagesBloc.setLove(widget.image.id, widget.user);
     }
   }
 
-  setLike() async {
+  toggleLike() async {
     print('islike $isLike');
     if (isLike) {
       setState(() {
         isLike = false;
+//        likeType = 'like';
       });
       await imagesBloc.deleteLike(widget.image.id, widget.user);
     } else {
       setState(() {
         isLike = true;
       });
-      await imagesBloc.setLike(widget.image.id, widget.user);
+      await imagesBloc.setLike(widget.image.id, widget.user, likeType);
     }
   }
 
   setInfo() {
     setState(() {
       isInfo = !isInfo;
-      if (isInfo)
-        _panelController.open();
-      else
-        _panelController.close();
     });
   }
 
@@ -77,6 +95,48 @@ class _ImageWidgetState extends State<ImageWidget> {
       else
         isSend = true;
     });
+  }
+
+  Widget emojiWidget = FlareActor(
+    'assets/like.flr',
+    fit: BoxFit.scaleDown,
+    shouldClip: false,
+  );
+
+  Widget like() {
+    print('like $isLike');
+    return FlareActor(
+      'assets/like.flr',
+      fit: BoxFit.scaleDown,
+      shouldClip: false,
+      animation:
+      isLike
+          ? 'show'
+          : 'hide',
+    );
+  }
+
+  Widget love() {
+    print('love $isLike');
+    return FlareActor(
+      'assets/love.flr',
+      fit: BoxFit.scaleDown,
+      shouldClip: false,
+      animation: isLike
+          ? 'show'
+          : 'hide',
+    );
+  }
+
+  Widget monkey() {
+    return FlareActor(
+      'assets/monkey.flr',
+      fit: BoxFit.scaleDown,
+      shouldClip: false,
+      animation: isLike
+          ? _likeActive
+          : _likeInActive,
+    );
   }
 
   @override
@@ -125,7 +185,11 @@ class _ImageWidgetState extends State<ImageWidget> {
                         Text('${widget.image.user.name}'),
                         Padding(padding: EdgeInsets.only(top: 5)),
                         Text(
-                          '${DateFormat('dd/MM/yy hh:mm a').format(new DateTime.fromMillisecondsSinceEpoch(widget.image.time.toDate().millisecondsSinceEpoch))}',
+                          '${DateFormat('dd/MM/yy hh:mm a')
+                              .format(new DateTime.fromMillisecondsSinceEpoch(
+                              widget.image.time
+                                  .toDate()
+                                  .millisecondsSinceEpoch))}',
                           style: TextStyle(fontSize: 12),
                         ),
                       ],
@@ -161,24 +225,117 @@ class _ImageWidgetState extends State<ImageWidget> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  ClipRRect(
-                    key: _dataKey,
-                    borderRadius: new BorderRadius.circular(0),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.image.url,
-                      errorWidget: (context, url, v) {
-                        return Container(
-                          height: 150,
-                          child: Icon(Icons.error),
-                        );
-                      },
-                      placeholder: (context, url) {
-                        return Container(
-                          height: 150,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      },
-                    ),
+                  Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: <Widget>[
+                      ClipRRect(
+                        key: _dataKey,
+                        borderRadius: new BorderRadius.circular(0),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.image.url,
+                          errorWidget: (context, url, v) {
+                            return Container(
+                              height: 150,
+                              child: Icon(Icons.error),
+                            );
+                          },
+                          placeholder: (context, url) {
+                            return Container(
+                              height: 150,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          },
+                        ),
+                      ),
+                      Visibility(
+                        visible: emoji,
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  8)),
+                          child: Padding(padding: EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      emojiWidget = monkey();
+                                      emojiString = 'assets/monkey.flr';
+                                      likeType = 'monkey';
+                                      emoji = false;
+                                      emojiLike();
+                                    });
+                                  },
+                                  icon: Container(
+                                    height: 50,
+                                    width: 50,
+                                    child: FlareActor(
+                                      'assets/monkey.flr',
+                                      fit: BoxFit.scaleDown,
+                                      shouldClip: false,
+                                      animation:
+                                      isLike
+                                          ? 'show'
+                                          : 'hide',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      emojiWidget = like();
+                                      emojiString = 'assets/like.flr';
+                                      likeType = 'like';
+                                      emoji = false;
+                                      emojiLike();
+                                    });
+                                  },
+                                  icon: Container(
+                                    height: 50,
+                                    width: 50,
+                                    child: FlareActor(
+                                      'assets/like.flr',
+                                      fit: BoxFit.scaleDown,
+                                      shouldClip: false,
+                                      animation:
+                                      isLike
+                                          ? 'show'
+                                          : 'hide',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      emojiWidget = love();
+                                      emojiString = 'assets/love.flr';
+                                      likeType = 'love';
+                                      emoji = false;
+                                      emojiLike();
+                                    });
+                                  },
+                                  icon: Container(
+                                    height: 50,
+                                    width: 50,
+                                    child: FlareActor(
+                                      'assets/love.flr',
+                                      fit: BoxFit.scaleDown,
+                                      shouldClip: false,
+                                      animation:
+                                      isLike
+                                          ? 'show'
+                                          : 'hide',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -189,60 +346,88 @@ class _ImageWidgetState extends State<ImageWidget> {
                               .collection('images')
                               .document(widget.image.id)
                               .collection('likes')
+                              .orderBy('time', descending: true)
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasData) {
                               print(
                                   'data like ${snapshot.data.documents.toString()}');
-                              if (snapshot.data.documents.length == 0)
+                              if (snapshot.data.documents.length == 0) {
                                 isLike = false;
-                              else {
-                                bool like = false;
-                                snapshot.data.documents.forEach((d) {
-                                  if (d.documentID == widget.user.userID)
-                                    like = true;
-                                });
-                                isLike = like;
                               }
-                              return FlatButton.icon(
-                                onPressed: () => setLike(),
-                                icon: Container(
+                              else {
+                                bool isLike = false;
+                                snapshot.data.documents.forEach((d) {
+                                  if (d.documentID == widget.user.userID) {
+                                    isLike = true;
+                                    switch (d.data['type']) {
+                                      case 'like':
+                                        likeType = 'like';
+                                        break;
+                                      case 'love':
+                                        likeType = 'love';
+                                        break;
+                                      case 'monkey':
+                                        likeType = 'monkey';
+                                        break;
+                                    }
+                                  }
+                                });
+                                this.isLike = isLike;
+                              }
+                              print('liketype $likeType');
+                              switch (likeType) {
+                                case 'like':
+                                  emojiWidget = like();
+                                  emojiString = 'assets/like.flr';
+                                  break;
+                                case 'love':
+                                  emojiWidget = love();
+                                  emojiString = 'assets/love.flr';
+                                  break;
+                                case 'monkey':
+                                  emojiWidget = monkey();
+                                  emojiString = 'assets/monkey.flr';
+                                  break;
+                              }
+                              print('islike $isLike');
+                              print('emojiwidget $likeType');
+                              return GestureDetector(
+                                onLongPress: () {
+                                  setState(() {
+                                    emoji = !emoji;
+                                  });
+                                },
+                                child: FlatButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (emoji) emoji = false;
+                                    });
+                                    toggleLike();
+                                  },
+                                  icon: Container(
                                     height: 50,
                                     width: 50,
                                     child: FlareActor(
-                                      'assets/thumb_up_white.flr',
+                                      emojiString,
                                       fit: BoxFit.scaleDown,
                                       shouldClip: false,
                                       animation:
-                                          isLike ? _likeActive : _likeInActive,
-                                    )),
-                                label: Text(
-                                  '${snapshot.data.documents.length}',
-                                  textAlign: TextAlign.center,
+                                      isLike
+                                          ? 'show'
+                                          : 'hide',
+                                    ),
+                                  ),
+                                  label: Text(
+                                    '${snapshot.data.documents.length}',
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               );
                             } else
                               return Center(child: CircularProgressIndicator());
                           },
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          padding: EdgeInsets.all(4),
-                          margin: EdgeInsets.all(2),
-                          child: IconButton(
-                            onPressed: () => setComments(),
-                            icon: FlareActor(
-                              'assets/comments_white.flr',
-                              shouldClip: false,
-                              animation: isAddComment
-                                  ? _commentsActive
-                                  : _commentsInActive,
-                            ),
-                          ),
                         ),
                       ),
                       Expanded(
@@ -250,97 +435,46 @@ class _ImageWidgetState extends State<ImageWidget> {
                           stream: Firestore.instance
                               .collection('images')
                               .document(widget.image.id)
-                              .collection('loves')
-                              .snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data.documents.length == 0)
-                                isHeart = false;
-                              else {
-                                bool love = false;
-                                snapshot.data.documents.forEach((d) {
-                                  if (d.documentID == widget.user.userID)
-                                    love = true;
-                                });
-                                isHeart = love;
-                              }
-                              return FlatButton.icon(
-                                onPressed: () => setHeart(),
-                                icon: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: FlareActor(
-                                      'assets/love_white.flr',
-                                      fit: BoxFit.scaleDown,
-                                      shouldClip: false,
-                                      animation: isHeart
-                                          ? _heartActive
-                                          : _heartInActive,
-                                    )),
-                                label: Text(
-                                  '${snapshot.data.documents.length}',
-                                  textAlign: TextAlign.center,
+                              .collection('comments')
+                              .orderBy('time', descending: true)
+                              .snapshots(), builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasData) {
+                            return FlatButton.icon(
+                              onPressed: () => setComments(),
+                              icon: Container(
+                                height: 50,
+                                width: 50,
+                                padding: EdgeInsets.all(4),
+                                margin: EdgeInsets.all(2),
+                                child: FlareActor(
+                                  'assets/comments_white.flr',
+                                  shouldClip: false,
+                                  fit: BoxFit.scaleDown,
+                                  animation: isAddComment
+                                      ? _commentsActive
+                                      : _commentsInActive,
                                 ),
-                              );
-                            } else
-                              return Center(child: CircularProgressIndicator());
-                          },
-                        ),
+                              ),
+                              label: Text('${snapshot.data.documents.length}',
+                                textAlign: TextAlign.center,),
+                            );
+                          }
+                          else
+                            return Center(child: CircularProgressIndicator());
+                        },),
                       ),
                     ],
                   ),
                   Visibility(
                     visible: isAddComment,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: TextField(
-                              maxLines: 3,
-                              minLines: 1,
-                              decoration: InputDecoration(
-                                hintText: 'Enter Comment',
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          padding: EdgeInsets.all(4),
-                          margin: EdgeInsets.all(2),
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isSend = !isSend;
-                              });
-                            },
-                            icon: FlareActor(
-                              'assets/send.flr',
-                              shouldClip: false,
-                              animation: isSend ? 'send' : 'open',
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    child: commentInput(),
                   ),
                 ],
               ),
-              FractionallySizedBox(
-                child: SlidingUpPanel(
-                  minHeight: 0,
-                  maxHeight: 300,
-                  defaultPanelState: PanelState.CLOSED,
-                  controller: _panelController,
-                  isDraggable: false,
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  panel: Container(),
-                ),
-              ),
+              Visibility(
+                  visible: isInfo,
+                  child: panel()),
             ],
           ),
         ],
@@ -348,9 +482,233 @@ class _ImageWidgetState extends State<ImageWidget> {
     );
   }
 
-  double getHeight() {
-    final RenderBox renderBoxRed = _dataKey.currentContext.findRenderObject();
-    final sizeRed = renderBoxRed.size.height;
-    return sizeRed;
+  Widget panel() {
+    return StreamBuilder(
+        stream: Firestore.instance
+            .collection('images')
+            .document(widget.image.id)
+            .collection('likes')
+            .orderBy('time', descending: true)
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> likeSnapshot) {
+          if (likeSnapshot.hasData)
+            return likeSnapshot.data.documents == null ||
+                likeSnapshot.data.documents.length == 0 ?
+            Card(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('No Likes',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ) :
+            Card(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(0),
+                itemCount: likeSnapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    child: StreamBuilder(
+                      stream: Firestore.instance.collection('users')
+                          .document(
+                          likeSnapshot.data.documents[index].documentID)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                        if (userSnapshot.hasData) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  child: FlareActor(
+                                    'assets/${likeSnapshot.data
+                                        .documents[index]['type']}.flr',
+                                    fit: BoxFit.scaleDown,
+                                    shouldClip: false,
+                                    animation:
+                                    'show',
+                                  ),
+                                ),
+                                Text(userSnapshot.data['name'],
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '${DateFormat('dd/MM/yy hh:mm a').format(
+                                        new DateTime.fromMillisecondsSinceEpoch(
+                                            likeSnapshot.data
+                                                .documents[index]['time']
+                                                .toDate()
+                                                .millisecondsSinceEpoch))}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.only(right: 16)),
+                              ],
+                            ),
+                          );
+                        } else
+                          return Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  );
+                },
+              ),
+            );
+          else
+            return Center(child: CircularProgressIndicator());
+        });
+  }
+
+  Widget commentInput() {
+    return Column(
+      children: <Widget>[
+        StreamBuilder(
+            stream: Firestore.instance
+                .collection('images')
+                .document(widget.image.id)
+                .collection('comments')
+                .orderBy('time', descending: true)
+                .snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<QuerySnapshot> commentsSnapshot) {
+              if (commentsSnapshot.hasData)
+                return commentsSnapshot.data.documents == null ||
+                    commentsSnapshot.data.documents.length == 0 ?
+                Card(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text('No Comments',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ) : ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(0),
+                    itemCount: commentsSnapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        child: StreamBuilder(
+                          stream: Firestore.instance.collection('users')
+                              .document(
+                              commentsSnapshot.data.documents[index]['user'])
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                            if (userSnapshot.hasData) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: AlignmentDirectional.bottomEnd,
+                                      height: 16,
+                                      width: 16,
+                                      margin: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            width: 1, color: Colors.white54),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                              '${userSnapshot.data['photo']}'),
+                                        ),
+                                      ),
+                                    ),
+                                    Text('${commentsSnapshot.data
+                                        .documents[index]['comment']}',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '${DateFormat('dd/MM/yy hh:mm a')
+                                            .format(
+                                            new DateTime
+                                                .fromMillisecondsSinceEpoch(
+                                                commentsSnapshot.data
+                                                    .documents[index]['time']
+                                                    .toDate()
+                                                    .millisecondsSinceEpoch))}',
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(right: 16)),
+                                  ],
+                                ),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      );
+                    }); else
+                return Center(child: CircularProgressIndicator());
+            }),
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: TextField(
+                    maxLines: 3,
+                    minLines: 1,
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Comment',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                elevation: 0,
+                margin: EdgeInsets.all(4),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25)),
+                child:
+                Container(
+                  height: 40,
+                  width: 40,
+                  padding: EdgeInsets.all(2),
+                  margin: EdgeInsets.all(2),
+                  child: IconButton(
+                    onPressed: () {
+                      print('comment send');
+                      addComment();
+                    },
+                    icon: FlareActor(
+                      'assets/send.flr',
+                      shouldClip: false,
+                      animation: isSend ? 'send' : 'open',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

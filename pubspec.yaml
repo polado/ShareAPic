@@ -31,12 +31,13 @@ dependencies:
   email_validator: ^1.0.0
   cached_network_image: ^1.1.1
   image_picker: ^0.6.1+4
-  rxdart: ^0.18.0
+  rxdart: ^0.21.0
   intl: ^0.15.8
   flushbar: ^1.9.0
   toast: ^0.1.5
   flare_flutter: ^1.6.2
   sliding_up_panel: ^0.3.6
+  like_button: ^0.1.9
 
 dev_dependencies:
   flutter_test:
@@ -59,11 +60,12 @@ flutter:
     - images/avatar_icon_star_wars.jpg
     - images/bestseller.jpg
     - assets/switch_day_night_theme.flr
+    - assets/comments_white.flr
+    - assets/like.flr
+    - assets/love.flr
     - assets/send.flr
     - assets/info.flr
-    - assets/thumb_up_white.flr
-    - assets/comments_white.flr
-    - assets/love_white.flr
+    - assets/monkey.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -21,14 +21,24 @@ class ImagesBloc {
     _imagesFetcher.sink.add(images);
   }
 
-  setLike(String imageID, UserModel user) async {
+  setComment(String imageID, UserModel user, String comment) async {
+    Timestamp time = Timestamp.now();
+    await Firestore.instance
+        .collection('images')
+        .document(imageID)
+        .collection('comments')
+        .document()
+        .setData({'user': user.userID, 'time': time, 'comment': comment});
+  }
+
+  setLike(String imageID, UserModel user, String likeType) async {
     Timestamp time = Timestamp.now();
     await Firestore.instance
         .collection('images')
         .document(imageID)
         .collection('likes')
         .document(user.userID)
-        .setData({'user': user.userID, 'time': time});
+        .setData({'user': user.userID, 'time': time, 'type': likeType});
   }
 
   deleteLike(String imageID, UserModel user) async {
@@ -36,25 +46,6 @@ class ImagesBloc {
         .collection('images')
         .document(imageID)
         .collection('likes')
-        .document(user.userID)
-        .delete();
-  }
-
-  setLove(String imageID, UserModel user) async {
-    Timestamp time = Timestamp.now();
-    await Firestore.instance
-        .collection('images')
-        .document(imageID)
-        .collection('loves')
-        .document(user.userID)
-        .setData({'user': user.userID, 'time': time});
-  }
-
-  deleteLove(String imageID, UserModel user) async {
-    await Firestore.instance
-        .collection('images')
-        .document(imageID)
-        .collection('loves')
         .document(user.userID)
         .delete();
   }
