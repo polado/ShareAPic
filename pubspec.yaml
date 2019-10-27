@@ -26,6 +26,7 @@ dependencies:
   cloud_firestore: ^0.12.9+4
   firebase_storage: ^3.0.6
   firebase_database: ^3.0.7
+  firebase_messaging: ^5.1.6
   firebase_auth: ^0.14.0+5
   google_sign_in: ^4.0.7
   email_validator: ^1.0.0
@@ -36,8 +37,6 @@ dependencies:
   flushbar: ^1.9.0
   toast: ^0.1.5
   flare_flutter: ^1.6.2
-  sliding_up_panel: ^0.3.6
-  like_button: ^0.1.9
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +64,13 @@ flutter:
     - assets/love.flr
     - assets/send.flr
     - assets/info.flr
+    - assets/in_love.flr
+    - assets/kiss.flr
+    - assets/lips.flr
+    - assets/smile.flr
+    - assets/thinking.flr
+    - assets/wink.flr
+    - assets/wow.flr
     - assets/monkey.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see

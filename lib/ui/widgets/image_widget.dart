@@ -255,82 +255,253 @@ class _ImageWidgetState extends State<ImageWidget> {
                               borderRadius: BorderRadius.circular(
                                   8)),
                           child: Padding(padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      emojiWidget = monkey();
-                                      emojiString = 'assets/monkey.flr';
-                                      likeType = 'monkey';
-                                      emoji = false;
-                                      emojiLike();
-                                    });
-                                  },
-                                  icon: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: FlareActor(
-                                      'assets/monkey.flr',
-                                      fit: BoxFit.scaleDown,
-                                      shouldClip: false,
-                                      animation:
-                                      isLike
-                                          ? 'show'
-                                          : 'hide',
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = like();
+                                        emojiString = 'assets/like.flr';
+                                        likeType = 'like';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/like.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      emojiWidget = like();
-                                      emojiString = 'assets/like.flr';
-                                      likeType = 'like';
-                                      emoji = false;
-                                      emojiLike();
-                                    });
-                                  },
-                                  icon: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: FlareActor(
-                                      'assets/like.flr',
-                                      fit: BoxFit.scaleDown,
-                                      shouldClip: false,
-                                      animation:
-                                      isLike
-                                          ? 'show'
-                                          : 'hide',
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = love();
+                                        emojiString = 'assets/love.flr';
+                                        likeType = 'love';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/love.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      emojiWidget = love();
-                                      emojiString = 'assets/love.flr';
-                                      likeType = 'love';
-                                      emoji = false;
-                                      emojiLike();
-                                    });
-                                  },
-                                  icon: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: FlareActor(
-                                      'assets/love.flr',
-                                      fit: BoxFit.scaleDown,
-                                      shouldClip: false,
-                                      animation:
-                                      isLike
-                                          ? 'show'
-                                          : 'hide',
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/monkey.flr';
+                                        likeType = 'monkey';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/monkey.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/in_love.flr';
+                                        likeType = 'in_love';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/in_love.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/kiss.flr';
+                                        likeType = 'kiss';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/kiss.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/lips.flr';
+                                        likeType = 'lips';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/lips.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/smile.flr';
+                                        likeType = 'smile';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/smile.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/thinking.flr';
+                                        likeType = 'thinking';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/thinking.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/wink.flr';
+                                        likeType = 'wink';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/wink.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        emojiWidget = monkey();
+                                        emojiString = 'assets/wow.flr';
+                                        likeType = 'wow';
+                                        emoji = false;
+                                        emojiLike();
+                                      });
+                                    },
+                                    icon: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: FlareActor(
+                                        'assets/wow.flr',
+                                        fit: BoxFit.scaleDown,
+                                        shouldClip: false,
+                                        animation:
+                                        isLike
+                                            ? 'show'
+                                            : 'hide',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -371,6 +542,27 @@ class _ImageWidgetState extends State<ImageWidget> {
                                       case 'monkey':
                                         likeType = 'monkey';
                                         break;
+                                      case 'in_love':
+                                        likeType = 'in_love';
+                                        break;
+                                      case 'kiss':
+                                        likeType = 'kiss';
+                                        break;
+                                      case 'lips':
+                                        likeType = 'lips';
+                                        break;
+                                      case 'smile':
+                                        likeType = 'smile';
+                                        break;
+                                      case 'thinking':
+                                        likeType = 'thinking';
+                                        break;
+                                      case 'wink':
+                                        likeType = 'wink';
+                                        break;
+                                      case 'wow':
+                                        likeType = 'wow';
+                                        break;
                                     }
                                   }
                                 });
@@ -379,16 +571,34 @@ class _ImageWidgetState extends State<ImageWidget> {
                               print('liketype $likeType');
                               switch (likeType) {
                                 case 'like':
-                                  emojiWidget = like();
                                   emojiString = 'assets/like.flr';
                                   break;
                                 case 'love':
-                                  emojiWidget = love();
                                   emojiString = 'assets/love.flr';
                                   break;
                                 case 'monkey':
-                                  emojiWidget = monkey();
                                   emojiString = 'assets/monkey.flr';
+                                  break;
+                                case 'in_love':
+                                  emojiString = 'assets/in_love.flr';
+                                  break;
+                                case 'kiss':
+                                  emojiString = 'assets/kiss.flr';
+                                  break;
+                                case 'lips':
+                                  emojiString = 'assets/lips.flr';
+                                  break;
+                                case 'smile':
+                                  emojiString = 'assets/smile.flr';
+                                  break;
+                                case 'thinking':
+                                  emojiString = 'assets/thinking.flr';
+                                  break;
+                                case 'wink':
+                                  emojiString = 'assets/wink.flr';
+                                  break;
+                                case 'wow':
+                                  emojiString = 'assets/wow.flr';
                                   break;
                               }
                               print('islike $isLike');

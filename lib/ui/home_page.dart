@@ -39,11 +39,13 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.builder(
                       itemCount: snapshot.data.documents.length,
                       padding: EdgeInsets.only(bottom: 80),
-                      itemBuilder: (context, index) => ImageWidget(
+                      itemBuilder: (context, index) =>
+                          ImageWidget(
                             image:
-                                new ImageModel(snapshot.data.documents[index]),
+                            new ImageModel(snapshot.data.documents[index]),
                             user: widget.user,
-                          )));
+                          ))
+              );
             } else {
               return Center(child: CircularProgressIndicator());
             }

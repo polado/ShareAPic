@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_a_pic/blocs/images_bloc.dart';
 import 'package:share_a_pic/models/user_model.dart';
+import 'package:share_a_pic/ui/edit_profile_page.dart';
 import 'package:share_a_pic/ui/home_page.dart';
 import 'package:share_a_pic/ui/profile_page.dart';
 
@@ -22,11 +23,13 @@ class _MainPageState extends State<MainPage> {
   PageController _pageController =
       new PageController(initialPage: 0, keepPage: true);
 
+  String _title = 'Home';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('$_title'),
         centerTitle: true,
         actions: <Widget>[
           menu(),
@@ -46,6 +49,9 @@ class _MainPageState extends State<MainPage> {
                     _pageController.animateToPage(0,
                         duration: Duration(milliseconds: 100),
                         curve: Curves.easeInOut);
+                    setState(() {
+                      _title = 'Home';
+                    });
                   }),
             ),
             Expanded(
@@ -59,6 +65,9 @@ class _MainPageState extends State<MainPage> {
                     _pageController.animateToPage(1,
                         duration: Duration(milliseconds: 100),
                         curve: Curves.easeInOut);
+                    setState(() {
+                      _title = 'Profile';
+                    });
                   }),
             ),
           ],
@@ -114,7 +123,8 @@ class _MainPageState extends State<MainPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ProfilePage(
+                    builder: (context) =>
+                        EditProfilePage(
                           user: user,
                         )));
             break;
