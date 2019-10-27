@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share_a_pic/blocs/images_bloc.dart';
 import 'package:share_a_pic/models/user_model.dart';
 import 'package:share_a_pic/ui/edit_profile_page.dart';
@@ -169,19 +170,21 @@ class _MainPageState extends State<MainPage> {
 
   selectImage(BuildContext context) async {
     print('uploading ${widget.user.toString()}');
-//    Flushbar(
-//      message: 'Uploading your image...',
-//    ).show(context);
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('Uploading your image'),
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      backgroundColor: Theme.of(context).accentColor,
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 3),
-    ));
-    imagesBloc.postImage(user, image);
+    print('uploading img $image');
+    ProgressDialog pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal,
+        isDismissible: false,
+        showLogs: false);
+    pr.style(
+        progressWidget: Center(child: CircularProgressIndicator()),
+        message: 'Uploading...',
+        borderRadius: 8);
+    if (image != null) {
+      pr.show();
+      await imagesBloc.postImage(user, image);
+      pr.dismiss();
+    }
   }
 
   Future<void> _logout() async {

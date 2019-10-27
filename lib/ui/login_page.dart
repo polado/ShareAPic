@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:share_a_pic/blocs/user_bloc.dart';
 import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
@@ -203,56 +203,58 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signUp() async {
-    if (_validate())
-      try {
-        Toast.show('Creating yout account', context,
-            backgroundColor: Theme.of(context).accentColor,
+    if (_validate()) {
+      ProgressDialog pr = new ProgressDialog(context,
+          type: ProgressDialogType.Normal,
+          isDismissible: false,
+          showLogs: false);
+      pr.style(
+          progressWidget: Center(child: CircularProgressIndicator()),
+          message: 'Creating your account...',
+          borderRadius: 8);
+      pr.show();
+
+      bool res = await userBloc.emailPasswordSignUp(
+          email, password, 'Man Has No Name');
+      pr.dismiss();
+      if (!res)
+        Toast.show('Something went wrong', context,
+            backgroundColor: Theme
+                .of(context)
+                .accentColor,
             duration: Toast.LENGTH_LONG,
             gravity: Toast.CENTER,
             textColor: Colors.black,
-            backgroundRadius: 8);
-
-        AuthResult result = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-        FirebaseUser user = result.user;
-        UserUpdateInfo info = new UserUpdateInfo();
-        info.displayName = 'Man Has No Name';
-        info.photoUrl =
-            'https://firebasestorage.googleapis.com/v0/b/sendapic-82cc3.appspot.com/o/bestseller.jpg?alt=media&token=803e66c6-2be5-4b96-aa8b-c50c1d084045';
-        user.updateProfile(info);
-        Firestore.instance.collection('users').document(user.uid).setData({
-          'email': user.email,
-          'name': 'Man Has No Name',
-          'photo':
-              'https://firebasestorage.googleapis.com/v0/b/sendapic-82cc3.appspot.com/o/avatar_icon_star_wars.jpg?alt=media&token=7ffc037b-df39-4d80-9778-2110cc5cbfb8'
-        });
-        Toast.show('Welcome :)', context,
-            backgroundColor: Theme.of(context).accentColor,
-            duration: Toast.LENGTH_LONG,
-            gravity: Toast.CENTER,
-            textColor: Colors.black,
-            backgroundRadius: 8);
-
-        print('signup ${result.toString()}');
-      } catch (e) {
-        print('errorss $e');
-      }
+            backgroundRadius: 80);
+    }
   }
 
   Future<void> _login() async {
-    if (_validate())
-      try {
-        Toast.show('Loging in...', context,
+    if (_validate()) {
+      ProgressDialog pr = new ProgressDialog(context,
+          type: ProgressDialogType.Normal,
+          isDismissible: false,
+          showLogs: false);
+      pr.style(
+          progressWidget: Center(child: CircularProgressIndicator()),
+          message: 'Loging in...',
+          borderRadius: 8);
+      pr.show();
+//        Toast.show('Loging in...', context,
+//            backgroundColor: Theme.of(context).accentColor,
+//            duration: Toast.LENGTH_LONG,
+//            gravity: Toast.CENTER,
+//            textColor: Colors.black,
+//            backgroundRadius: 8);
+      bool res = await userBloc.emailPasswordLogin(email, password);
+      pr.dismiss();
+      if (!res)
+        Toast.show('User data not found!', context,
             backgroundColor: Theme.of(context).accentColor,
             duration: Toast.LENGTH_LONG,
             gravity: Toast.CENTER,
             textColor: Colors.black,
-            backgroundRadius: 8);
-        AuthResult result = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        print('login ${result.toString()}');
-      } catch (e) {
-        print('errorss $e');
+            backgroundRadius: 80);
       }
   }
 }
